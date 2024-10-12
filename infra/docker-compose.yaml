@@ -1,0 +1,15 @@
+version: '3'
+volumes:
+  data:
+services:
+  database:
+    image: mariadb:10.11
+    environment:
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: eureka
+      MYSQL_USER: root
+      MYSQL_PASSWORD: toor
+    volumes:
+      - data:/var/lib/mysql
+    ports:
+      - "3306:3306"

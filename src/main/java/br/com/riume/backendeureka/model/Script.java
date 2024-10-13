@@ -1,15 +1,20 @@
 package br.com.riume.backendeureka.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
 @Table(name = "scripts")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Script {
 
     @Id
@@ -28,25 +33,27 @@ public class Script {
     @Column(name = "document", nullable = false)
     private String document;
 
+    @Builder.Default
     @Column(name = "deleted", nullable = false)
     private Boolean deleted = false;
 
+    @Builder.Default
     @Column(name = "active", nullable = false)
     private Boolean active = true;
 
     @Column(name = "submission_date", updatable = false)
-    private java.sql.Timestamp submissionDate;
+    private Timestamp submissionDate;
 
     @Column(name = "updated_at")
-    private java.sql.Timestamp updatedAt;
+    private Timestamp updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        submissionDate = new java.sql.Timestamp(System.currentTimeMillis());
+        submissionDate = new Timestamp(System.currentTimeMillis());
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = new java.sql.Timestamp(System.currentTimeMillis());
+        updatedAt = new Timestamp(System.currentTimeMillis());
     }
 }

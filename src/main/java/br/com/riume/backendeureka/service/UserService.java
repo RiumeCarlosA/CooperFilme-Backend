@@ -37,26 +37,23 @@ public class UserService {
     @Autowired
     private JWTUtil jwtUtil;
 
-    public ResponseEntity<Object> saveUser(RegisterRequest registroRequest) {
-        // Verifica se o email já está em uso
-        if (userRepository.findByEmail(registroRequest.getEmail()).isPresent()) {
+    public ResponseEntity<Object> saveUser(RegisterRequest registerRequest) {
+        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ErrorResponse(HttpStatus.CONFLICT, "Error: Email is already in use!"));
         }
 
-        // Busca as roles e verifica se todas foram encontradas
-        Set<Role> roles = new HashSet<>(roleRepository.findAllById(registroRequest.getRole()));
-        if (roles.size() != registroRequest.getRole().size()) {
+        Set<Role> roles = new HashSet<>(roleRepository.findAllById(registerRequest.getRoles()));
+        if (roles.size() != registerRequest.getRoles().size()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse(HttpStatus.BAD_REQUEST, "Error: One or more roles are invalid!"));
         }
 
-        // Cria o usuário com as roles encontradas
         User user = User.builder()
                 .userId(UUID.randomUUID())
-                .name(registroRequest.getName())
-                .email(registroRequest.getEmail())
-                .password(passwordEncoder.encode(registroRequest.getPassword()))
+                .name(registerRequest.getName())
+                .email(registerRequest.getEmail())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .roles(roles)
                 .build();
 

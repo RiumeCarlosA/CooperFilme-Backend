@@ -33,7 +33,7 @@ public class SecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    private final String[] WHITELIST = {"/auth/**"};
+    private final String[] WHITELIST = {"/auth/**", "/clients/**", "/scripts/**"};
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {

@@ -9,13 +9,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegisterRequest {
+public class RegisterClientRequest {
 
     private String name;
 
     private String email;
 
-    private String password;
+    private String phone;
 
-    private List<Long> roles;
 }

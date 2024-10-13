@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
@@ -30,22 +31,22 @@ public class Vote {
     private VoteOption vote;
 
     @Column(name = "vote_date", updatable = false)
-    private java.sql.Timestamp voteDate;
+    private Timestamp voteDate;
 
     @Column(name = "updated_at")
-    private java.sql.Timestamp updatedAt;
+    private Timestamp updatedAt;
 
     @Column(name = "deleted", nullable = false)
     private Boolean deleted = false;
 
     @PrePersist
     protected void onCreate() {
-        voteDate = new java.sql.Timestamp(System.currentTimeMillis());
+        voteDate = new Timestamp(System.currentTimeMillis());
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = new java.sql.Timestamp(System.currentTimeMillis());
+        updatedAt = new Timestamp(System.currentTimeMillis());
     }
 
     public enum VoteOption {

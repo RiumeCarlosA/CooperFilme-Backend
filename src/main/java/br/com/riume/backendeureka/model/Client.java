@@ -1,14 +1,19 @@
 package br.com.riume.backendeureka.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
 @Table(name = "clients")
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Client {
 
@@ -26,22 +31,23 @@ public class Client {
     @Column(name = "phone")
     private String phone;
 
+    @Builder.Default
     @Column(name = "deleted", nullable = false)
     private Boolean deleted = false;
 
     @Column(name = "created_at", updatable = false)
-    private java.sql.Timestamp createdAt;
+    private Timestamp createdAt;
 
     @Column(name = "updated_at")
-    private java.sql.Timestamp updatedAt;
+    private Timestamp updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        createdAt = new java.sql.Timestamp(System.currentTimeMillis());
+        createdAt = new Timestamp(System.currentTimeMillis());
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = new java.sql.Timestamp(System.currentTimeMillis());
+        updatedAt = new Timestamp(System.currentTimeMillis());
     }
 }

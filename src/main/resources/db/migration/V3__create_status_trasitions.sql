@@ -10,12 +10,10 @@ CREATE TABLE status_transitions (
 
 -- Inserindo transições válidas com as roles permitidas
 INSERT INTO status_transitions (current_status_id, next_status_id, role_id) VALUES
-    (1, 2, 1),  -- pending_review to in_review, Analyst
-    (2, 3, 2),  -- in_review to awaiting_revision, Reviewer
-    (2, 4, 2),  -- in_review to in_revision, Reviewer
-    (3, 5, 2),  -- awaiting_revision to awaiting_approval, Reviewer
-    (4, 6, 3),  -- in_revision to in_approval, Approver
-    (5, 7, 3),  -- awaiting_approval to approved, Approver
-    (5, 8, 3),  -- awaiting_approval to rejected, Approver
-    (6, 7, 3),  -- in_approval to approved, Approver
-    (6, 8, 3);  -- in_approval to rejected, Approver
+    (1, 2, 1),
+    (2, 3, 1),
+    (3, 4, 2),
+    (4, 5, 2),
+    (4, 8, 2),
+    (5, 6, 3),
+    (5, 8, 3)

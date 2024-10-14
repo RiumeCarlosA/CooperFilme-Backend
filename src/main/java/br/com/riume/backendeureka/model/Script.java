@@ -33,6 +33,9 @@ public class Script {
     @Column(name = "document", nullable = false)
     private String document;
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
     @Builder.Default
     @Column(name = "deleted", nullable = false)
     private Boolean deleted = false;

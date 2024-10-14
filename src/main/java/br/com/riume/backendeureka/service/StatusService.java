@@ -1,18 +1,20 @@
 package br.com.riume.backendeureka.service;
 
+import br.com.riume.backendeureka.DTOs.request.ChangeStatusRequest;
+import br.com.riume.backendeureka.DTOs.response.ErrorResponse;
 import br.com.riume.backendeureka.model.*;
 import br.com.riume.backendeureka.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,13 +35,23 @@ public class StatusService {
     @Autowired
     private StatusFlowRepository statusFlowRepository;
 
-    public ResponseEntity<Object> alterarStatus(UUID IdScript, Long newStatusId, UUID userId) {
-        Status newStatus = statusRepository.findById(newStatusId).orElseThrow(() -> new RuntimeException("Error: new status not found"));
-        Script script = scriptRepository.findById(IdScript).orElseThrow(() -> new RuntimeException("Error: Script not found"));
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Error: User not found"));
-        if (!canIChangeStatus(script.getStatus(), newStatus, userId)) {
+    @Autowired
+    private EmailService emailService;
+
+    public ResponseEntity<Object> alterStatus(ChangeStatusRequest changeStatus) {
+        Status newStatus = statusRepository.findById(changeStatus.getStatus()).orElseThrow(() -> new RuntimeException("Error: new status not found"));
+        Script script = scriptRepository.findById(UUID.fromString(changeStatus.getScriptId())).orElseThrow(() -> new RuntimeException("Error: Script not found"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && authentication.getName().toLowerCase().contains("anonymous")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse(HttpStatus.UNAUTHORIZED, "Error: Unauthorized"));
+
+        }
+        User user = userRepository.findByEmail((String) authentication.getPrincipal()).orElseThrow(() -> new RuntimeException("Error: User not found"));
+
+        if (!canIChangeStatus(script.getStatus(), newStatus, user.getUserId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Transição de status não permitida.");
+                    .body("Error: status change failed.");
         }
 
         script.setStatus(newStatus);
@@ -50,7 +62,7 @@ public class StatusService {
                 .statusFrom(script.getStatus())
                 .statusTo(newStatus)
                 .user(user)
-                .description("Descrição da transição de status, se necessário")
+                .description(changeStatus.getMessage())
                 .build();
 
         statusFlowRepository.save(log);

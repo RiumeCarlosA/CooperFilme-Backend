@@ -31,12 +31,9 @@ public class ScriptService {
     private StatusRepository statusRepository;
 
     @Autowired
-    private StatusService statusService;
-
-    @Autowired
     private DocumentService documentService;
 
-    public ResponseEntity<Object> saveScript(MultipartFile file, String email) {
+    public ResponseEntity<Object> saveScript(MultipartFile file, String email, String title) {
         try {
             Optional<Client> clientOpt = clientRepository.findByEmail(email);
             if (clientOpt.isEmpty()) {
@@ -52,6 +49,7 @@ public class ScriptService {
             Script script = Script.builder()
                     .client(client)
                     .status(defaultStatus)
+                    .title(title)
                     .document(documentUrl)
                     .build();
 

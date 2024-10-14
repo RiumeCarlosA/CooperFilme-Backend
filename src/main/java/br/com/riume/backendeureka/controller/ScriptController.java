@@ -21,7 +21,7 @@ public class ScriptController {
 
 
     @PostMapping("/upload-script")
-    public ResponseEntity<Object> uploadScript(@RequestParam("file") MultipartFile file, @RequestParam("email") String email) {
-        return scriptService.saveScript(file, email);
+    public ResponseEntity<Object> uploadScript(@RequestParam("file") MultipartFile file, @RequestParam("email") String email, @RequestParam("title") String title) {
+        return scriptService.saveScript(file, email, title);
     }
 }
